@@ -37,29 +37,9 @@ def train_model():
 
     # Train.
     history=model.fit(X, Y, batch_size=100, epochs=120, validation_data=(Xv, Yv))
-    # val_loss = history.history['val_loss']
-    # val_acc = history.history['val_accuracy']
-    # acc = history.history['accuracy']
-    # loss = history.history['loss']
-    # epochs = list(range(120))
     
     model.save('caeser_stream.h5')
     print('MODEL HAS BEEN SAVED\n')
-    
-    # caeser_stream_dict={'accuracy':acc,'val_accuracy':val_acc,'loss':loss,'val_loss':val_loss,'epochs':epochs}
-    
-    # try: 
-    #     with open('model_history.json','r+') as file:
-    #         dictionary=json.load(file)
-    #         dictionary['caeser_stream']=caeser_stream_dict
-    #         json.dump(dictionary,file)
-    # except FileNotFoundError:
-    #     with open('model_history.json','w+') as file:
-    #         dictionary={'caeser_stream':caeser_stream_dict}
-    #         json.dump(dictionary,file)
-
-    # with open('caeser_stream.pkl','+wb') as file:
-    #     pickle.dump(history,file)
     
     if os.path.exists('model_history.json'):
         with open('model_history.json','r+') as file:
@@ -81,6 +61,7 @@ def load_model():
     history=tf.keras.models.load_model('caeser_stream.h5')
     print('LOADING MODEL')
     return history
+
     
 def caeser_card(button_callback):
     
@@ -97,15 +78,47 @@ def caeser_card(button_callback):
         hist=json.load(hist)
         history_metrics=hist['caeser_stream']
         print('HOME STRETCH')
-    # Test Data
-    Kt = np.random.randint(0, 27, size=(10_000,)).reshape(-1, 1)
-    It = np.random.randint(0, max_val, size=(10_000,)).reshape(-1, 1)
-    Xt = np.hstack((It,Kt))
-    Yt = (Kt + It) % 26
 
-    Y_preds = model.predict(Xt)
+    Iw=st.text_input("Enter plaintext").lower()
+    key=int(st.number_input("Enter key"))
+    
+    if key!='' and len(Iw)!=0:
+        
+        iw_list=[]
+        for count in Iw:
+            iw_list.append(ord(count)-97)
+        It=np.array(iw_list).reshape(-1,1)
+        
+        kw_list=[key]
+        Kt=np.array(kw_list*len(Iw)).reshape(-1,1)
+        
+        Xt=np.hstack((It,Kt))
+        Yt=(Kt+It)%26    
+        print(Yt)
+        Y_preds = model.predict(Xt)
 
-    Y_preds = Y_preds.argmax(axis=1)
+        Y_preds = Y_preds.argmax(axis=1)
+        Yp=np.array(Y_preds)
+        
+        input_list=list(map(lambda x: chr(x + ord('a')),It.flatten()))
+        
+        predicted_list=list(map(lambda x: chr(x + ord('a')),Yp.flatten()))
+        target_list=list(map(lambda x: chr(x + ord('a')),Yt.flatten()))
+            
+        data={'input_character':input_list,'predicted_character':predicted_list,'target_character':target_list}
+        
+        df=pd.DataFrame(data=data)
+        df=df[df['input_character']!=' ']
+        st.dataframe(df)
+    
+        empty=False
+    else:
+        empty=True
+        
+    if empty:
+        st.markdown('##### Enter values into above test boxes to interact with model')
+
+
     
     fig,ax=plt.subplots(1,2)
     
