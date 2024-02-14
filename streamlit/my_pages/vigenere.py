@@ -285,8 +285,8 @@ def vigenere_card(button_callback):
         st.write(f':blue[Neural Network Output:] {ct}')
         st.write(f':red[Cipher Output:] {ct}')
     
-
-
+    st.image('./media/vigenere_seq2seq_acc.png')
+    st.image('./media/vigenere_seq2seq_loss.png')
 
 
 

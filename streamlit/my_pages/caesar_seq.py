@@ -44,3 +44,6 @@ def caeser_seq_card(button_callback):
 
         st.write(f':blue[Neural Network Output:] {ct}')
         st.write(f':red[Cipher Output:] {ct}')
+
+    st.image('./media/caesar_seq_acc.png')
+    st.image('./media/caesar_seq_loss.png')
