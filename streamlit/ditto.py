@@ -1,8 +1,8 @@
 import streamlit as st
 from components.components import st_card
-from pages.caeser import caeser_card
-from pages.aes import aes_card
-from pages.vigenere import vigenere_card
+from my_pages.caeser import caeser_card
+from my_pages.vigenere import vigenere_card
+from my_pages.caesar_seq import caeser_seq_card
 
 if 'start' not in st.session_state:
     st.set_page_config(layout='wide',page_title=' Ditto')
@@ -19,23 +19,28 @@ def display_page():
     
     if st.session_state.page=='main_page':
 
+        st.image('./media/ditto_hidden.png')
         model_container=st.container(border=True)
         model_cols=model_container.columns(3)
 
         with model_cols[0]:
-            st_card(name='Vigenere',button_callback=change_page_state,button_args=['des'])
+            st_card(name='Vigenere',button_callback=change_page_state,button_args=['vigenere'])
 
         with model_cols[1]:
-            st_card(name='AES',button_callback=change_page_state,button_args=['aes'])
+            st_card(name='Caeser Stream',button_callback=change_page_state,button_args=['caeser'])
 
         with model_cols[2]:
-            st_card(name='Caeser',button_callback=change_page_state,button_args=['caeser'])
+            st_card(name='Caeser Seq2Seq',
+                    button_callback=change_page_state, button_args=['caeser_seq'])
 
     elif st.session_state.page=='caeser':
         caeser_card(button_callback=homepage)
-    elif st.session_state.page=='aes':
-        aes_card(button_callback=homepage)
-    elif st.session_state.page=='des':
+        
+    elif st.session_state.page=='vigenere':
         vigenere_card(button_callback=homepage)
+
+    elif st.session_state.page == 'caeser_seq':
+        caeser_seq_card(button_callback=homepage)
+    
         
 display_page()
